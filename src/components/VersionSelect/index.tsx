@@ -6,10 +6,13 @@ import { VersionsList } from '../../reducers/versions';
 import { gettext } from '../../utils';
 import styles from './styles.module.scss';
 
-type PublicProps = {
+export type PublicProps = {
+  className?: string;
   label: string;
   listedVersions: VersionsList;
+  onChange: (version: string) => void;
   unlistedVersions: VersionsList;
+  value: string | undefined;
   withLeftArrow: boolean;
 };
 
@@ -18,11 +21,19 @@ class VersionSelectBase extends React.Component<PublicProps> {
     withLeftArrow: false,
   };
 
+  onChange = (event: React.FormEvent) => {
+    const { value } = event.currentTarget as HTMLSelectElement;
+
+    this.props.onChange(value);
+  };
+
   render() {
     const {
+      className,
       label,
       listedVersions,
       unlistedVersions,
+      value,
       withLeftArrow,
     } = this.props;
 
@@ -34,9 +45,9 @@ class VersionSelectBase extends React.Component<PublicProps> {
           </div>
         )}
 
-        <Form.Group as={Col}>
+        <Form.Group as={Col} className={className}>
           <Form.Label>{label}</Form.Label>
-          <Form.Control as="select">
+          <Form.Control as="select" value={value} onChange={this.onChange}>
             {listedVersions.length && (
               <optgroup
                 className={styles.listedGroup}
